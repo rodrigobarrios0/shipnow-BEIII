@@ -1,6 +1,7 @@
 import productRepository from '../repositories/product.repository.js';
 import { PRODUCT_STATUS } from '../constants/index.js';
 import AppError from '../utils/app-error.js';
+import { ERROR_CODES } from '../errors/error-codes.js';
 
 class ProductService {
 
@@ -12,7 +13,7 @@ class ProductService {
         const product = await productRepository.getById(productId);
 
         if (!product) {
-            throw new AppError('Producto no encontrado.', 404);
+            throw new AppError(ERROR_CODES.PRODUCT_NOT_FOUND);
         }
 
         return product;
@@ -44,7 +45,7 @@ class ProductService {
         );
 
         if (!updatedProduct) {
-            throw new AppError('Producto no encontrado.', 404);
+            throw new AppError(ERROR_CODES.PRODUCT_NOT_FOUND);
         }
 
         return updatedProduct;
@@ -54,7 +55,7 @@ class ProductService {
         const deletedProduct = await productRepository.delete(productId);
 
         if (!deletedProduct) {
-            throw new AppError('Producto no encontrado.', 404);
+            throw new AppError(ERROR_CODES.PRODUCT_NOT_FOUND);
         }
 
         return deletedProduct;

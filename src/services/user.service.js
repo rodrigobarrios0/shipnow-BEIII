@@ -1,5 +1,6 @@
 import userRepository from '../repositories/user.repository.js';
 import AppError from '../utils/app-error.js';
+import { ERROR_CODES } from '../errors/error-codes.js';
 
 class UserService {
     async getAllUsers() {
@@ -10,7 +11,7 @@ class UserService {
         const user = await userRepository.getById(userId);
 
         if (!user) {
-            throw new AppError('Usuario no encontrado.', 404);
+            throw new AppError(ERROR_CODES.USER_NOT_FOUND);
         }
 
         return user;
@@ -20,7 +21,7 @@ class UserService {
         const existingUser = await userRepository.getByEmail(userData.email);
 
         if (existingUser) {
-            throw new AppError('Ya existe un usuario con ese email.', 400);
+            throw new AppError(ERROR_CODES.DUPLICATE_EMAIL);
         }
 
         return userRepository.create(userData);
@@ -33,7 +34,7 @@ class UserService {
                 const existingUser = await userRepository.getByEmail(userData.email);
 
             if (existingUser) {
-                throw new AppError('Ya existe un usuario con ese email.', 400);
+                throw new AppError(ERROR_CODES.DUPLICATE_EMAIL);
             }
         }
 

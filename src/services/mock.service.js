@@ -6,6 +6,7 @@ import orderRepository from '../repositories/order.repository.js';
 import { generateMockDeliveries } from '../mocks/delivery.mock.js';
 import deliveryRepository from '../repositories/delivery.repository.js';
 import { USER_ROLES } from '../constants/index.js';
+import { ERROR_CODES } from '../errors/error-codes.js';
 
 class MockService {
     validateQuantity(quantity) {
@@ -16,10 +17,7 @@ class MockService {
             parsedQuantity <= 0 ||
             parsedQuantity > 100
         ) {
-            throw new AppError(
-                'La cantidad debe ser un número entero entre 1 y 100.',
-                400
-            );
+            throw new AppError(ERROR_CODES.INVALID_MOCK_QUANTITY);
         }
 
         return parsedQuantity;
@@ -48,10 +46,7 @@ async generateData(
         this.validateQuantity(deliveriesQuantity);
 
     if (validDeliveriesQuantity > validOrdersQuantity) {
-        throw new AppError(
-            'No puede haber más entregas que pedidos.',
-            400
-        );
+        throw new AppError(ERROR_CODES.DELIVERIES_EXCEED_ORDERS);
     }
 
     const mockUsers = generateMockUsers(validUsersQuantity);

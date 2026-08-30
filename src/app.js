@@ -1,5 +1,7 @@
 import express from 'express';
 import apiRouter from './routes/index.js';
+import errorHandler from './middlewares/error-handler.js';
+import notFoundHandler from './middlewares/not-found-handler.js';
 
 const app = express();
 
@@ -14,20 +16,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-app.use((req, res) => {
-    res.status(404).json({
-        status: 'error',
-        message: 'Ruta no encontrada.'
-    });
-});
-
-app.use((error, req, res, next) => {
-    const statusCode = error.statusCode || 500;
-
-    res.status(statusCode).json({
-        status: 'error',
-        message: error.message || 'Error interno del servidor.'
-    });
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
