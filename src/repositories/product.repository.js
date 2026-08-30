@@ -17,10 +17,6 @@ class ProductRepository {
         return Product.create(productData);
     }
 
-    async getById(productId) {
-        return Product.findById(productId, { __v: 0 });
-    }
-
     async update(productId, productData) {
         return Product.findByIdAndUpdate(productId, productData, {
             new: true,

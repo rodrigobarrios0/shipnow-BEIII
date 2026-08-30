@@ -27,6 +27,10 @@ class UserRepository {
     async delete(userId) {
         return User.findByIdAndDelete(userId);
     }
+
+    async insertMany(usersData) {
+        return User.insertMany(usersData);
+    }
 }
 
 export default new UserRepository();
