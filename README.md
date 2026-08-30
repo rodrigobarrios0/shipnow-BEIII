@@ -274,3 +274,35 @@ Cada petición HTTP registra:
 - Duración en milisegundos.
 
 El middleware global registra los errores esperados como `warning` y los errores inesperados como `error`.
+
+## Documentación con Swagger
+
+La API cuenta con documentación interactiva generada mediante Swagger y OpenAPI 3.0.
+
+Con el servidor iniciado, puede consultarse en:
+
+```text
+http://localhost:8080/api/docs
+```
+
+La documentación está organizada por módulos:
+
+- Users.
+- Products.
+- Mocks.
+- Logger.
+
+También contiene schemas reutilizables para:
+
+- Usuarios.
+- Productos.
+- Pedidos.
+- Entregas.
+- Respuestas de error.
+- Generación de datos de prueba.
+
+Swagger UI permite consultar los parámetros, bodies, respuestas y errores posibles, además de ejecutar peticiones mediante la opción **Try it out**.
+
+Los modelos `Order` y `Delivery` están documentados como schemas porque forman parte de la generación de datos mock. Actualmente no cuentan con endpoints CRUD públicos.
+
+Los valores inválidos que incumplen restricciones documentadas, como una cantidad menor que `1`, pueden ser rechazados directamente por Swagger UI antes de enviar la petición.

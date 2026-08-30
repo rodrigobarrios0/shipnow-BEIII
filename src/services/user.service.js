@@ -45,7 +45,7 @@ class UserService {
         const deletedUser = await userRepository.delete(userId);
 
         if (!deletedUser) {
-        throw new AppError('Usuario no encontrado.', 404);
+            throw new AppError(ERROR_CODES.USER_NOT_FOUND);
         }
 
         return deletedUser;

@@ -1,0 +1,28 @@
+/api/logger/test:
+  get:
+    tags:
+      - Logger
+    summary: Probar todos los niveles del logger
+    description: >
+      Herramienta interna de validación. Genera logs debug, http, info,
+      warning, error y fatal. No representa una funcionalidad del negocio.
+    responses:
+      '200':
+        description: Todos los niveles fueron ejecutados
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                message:
+                  type: string
+                  example: Todos los niveles del logger fueron ejecutados.
+      '500':
+        description: Error interno
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'

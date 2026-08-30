@@ -1,0 +1,207 @@
+/api/users:
+  get:
+    tags:
+      - Users
+    summary: Obtener todos los usuarios
+    description: Devuelve los usuarios registrados, ordenados desde el más reciente.
+    responses:
+      '200':
+        description: Usuarios obtenidos correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                payload:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/User'
+      '500':
+        description: Error interno
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  post:
+    tags:
+      - Users
+    summary: Crear un usuario
+    description: Crea un usuario y valida que el email no esté registrado.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+              - email
+            properties:
+              name:
+                type: string
+                example: Camila Torres
+              email:
+                type: string
+                format: email
+                example: camila@example.com
+              role:
+                type: string
+                enum:
+                  - admin
+                  - user
+                  - driver
+                default: user
+    responses:
+      '201':
+        description: Usuario creado correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                payload:
+                  $ref: '#/components/schemas/User'
+      '400':
+        description: Datos inválidos
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '409':
+        description: El email ya está registrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+/api/users/{id}:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Identificador MongoDB del usuario
+      schema:
+        type: string
+
+  get:
+    tags:
+      - Users
+    summary: Obtener un usuario por ID
+    responses:
+      '200':
+        description: Usuario encontrado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                payload:
+                  $ref: '#/components/schemas/User'
+      '400':
+        description: Identificador inválido
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Usuario no encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  put:
+    tags:
+      - Users
+    summary: Actualizar un usuario
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Camila Torres Actualizada
+              email:
+                type: string
+                format: email
+                example: camila.actualizada@example.com
+              role:
+                type: string
+                enum:
+                  - admin
+                  - user
+                  - driver
+    responses:
+      '200':
+        description: Usuario actualizado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                payload:
+                  $ref: '#/components/schemas/User'
+      '400':
+        description: Datos o identificador inválidos
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Usuario no encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '409':
+        description: El nuevo email ya está registrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+
+  delete:
+    tags:
+      - Users
+    summary: Eliminar un usuario
+    responses:
+      '200':
+        description: Usuario eliminado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                payload:
+                  $ref: '#/components/schemas/User'
+      '400':
+        description: Identificador inválido
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Usuario no encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
