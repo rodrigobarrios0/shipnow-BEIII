@@ -1,4 +1,5 @@
 import { ERROR_CODES } from '../errors/error-codes.js';
+import logger from '../config/logger.js';
 
 const errorHandler = (error, req, res, next) => {
     let selectedError;
@@ -15,12 +16,28 @@ const errorHandler = (error, req, res, next) => {
         selectedError = ERROR_CODES.INTERNAL_SERVER_ERROR;
     }
 
-    console.error({
-        code: selectedError.code,
-        message: error.message,
-        method: req.method,
-        path: req.originalUrl
+    const isExpectedError =
+    error.isOperational ||
+    error.name === 'CastError' ||
+    error.name === 'ValidationError' ||
+    error.code === 11000;
+
+const logMetadata = {
+    code: selectedError.code,
+    method: req.method,
+    path: req.originalUrl,
+    statusCode: selectedError.statusCode,
+    originalMessage: error.message
+};
+
+if (isExpectedError) {
+    logger.warning('Error controlado en la API.', logMetadata);
+} else {
+    logger.error('Error inesperado en la API.', {
+        ...logMetadata,
+        stack: error.stack
     });
+}
 
     res.status(selectedError.statusCode).json({
         status: 'error',

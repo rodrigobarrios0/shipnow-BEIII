@@ -7,6 +7,7 @@ import { generateMockDeliveries } from '../mocks/delivery.mock.js';
 import deliveryRepository from '../repositories/delivery.repository.js';
 import { USER_ROLES } from '../constants/index.js';
 import { ERROR_CODES } from '../errors/error-codes.js';
+import logger from '../config/logger.js';
 
 class MockService {
     validateQuantity(quantity) {
@@ -79,6 +80,12 @@ async generateData(
 
     const createdDeliveries =
         await deliveryRepository.insertMany(mockDeliveries);
+
+    logger.info('Datos de prueba generados.', {
+        users: createdUsers.length,
+        orders: createdOrders.length,
+        deliveries: createdDeliveries.length
+    });    
 
     return {
         users: createdUsers.length,

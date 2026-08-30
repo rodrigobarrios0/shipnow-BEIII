@@ -2,10 +2,12 @@ import express from 'express';
 import apiRouter from './routes/index.js';
 import errorHandler from './middlewares/error-handler.js';
 import notFoundHandler from './middlewares/not-found-handler.js';
+import requestLogger from './middlewares/request-logger.js';
 
 const app = express();
 
 app.use(express.json());
+app.use(requestLogger);
 
 app.use('/api', apiRouter);
 

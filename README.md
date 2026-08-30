@@ -230,3 +230,47 @@ Content-Type: application/json
 ```
 
 La última petición responde con `400` porque no puede haber más entregas que pedidos.
+
+## Logging y monitoreo
+
+ShipNow utiliza Winston para registrar eventos importantes de la aplicación.
+
+### Niveles disponibles
+
+| Nivel | Uso |
+| --- | --- |
+| `debug` | Información detallada para desarrollo |
+| `http` | Registro de peticiones HTTP |
+| `info` | Eventos normales importantes |
+| `warning` | Errores esperados o situaciones sospechosas |
+| `error` | Errores inesperados |
+| `fatal` | Fallas críticas que impiden continuar |
+
+En desarrollo se muestran todos los niveles. En producción se registran únicamente los niveles desde `info` hasta `fatal`.
+
+### Endpoint de prueba
+
+```text
+GET /api/logger/test
+```
+
+El endpoint genera un mensaje de cada nivel para verificar la configuración.
+
+Los niveles `error` y `fatal` se guardan en:
+
+```text
+logs/errors-YYYY-MM-DD.log
+```
+
+Los archivos rotan diariamente, tienen un tamaño máximo de 10 MB y se conservan durante 14 días.
+
+La carpeta `logs/` y los archivos `*.log` están excluidos del repositorio mediante `.gitignore`.
+
+Cada petición HTTP registra:
+
+- Método.
+- Ruta.
+- Código de respuesta.
+- Duración en milisegundos.
+
+El middleware global registra los errores esperados como `warning` y los errores inesperados como `error`.
