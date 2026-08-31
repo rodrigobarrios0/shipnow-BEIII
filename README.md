@@ -306,3 +306,70 @@ Swagger UI permite consultar los parámetros, bodies, respuestas y errores posib
 Los modelos `Order` y `Delivery` están documentados como schemas porque forman parte de la generación de datos mock. Actualmente no cuentan con endpoints CRUD públicos.
 
 Los valores inválidos que incumplen restricciones documentadas, como una cantidad menor que `1`, pueden ser rechazados directamente por Swagger UI antes de enviar la petición.
+
+## Testing funcional
+
+ShipNow incluye una suite de tests funcionales desarrollada con:
+
+- **Mocha:** organiza y ejecuta los tests.
+- **Chai:** permite validar resultados mediante aserciones.
+- **Supertest:** realiza peticiones HTTP directamente contra la aplicación Express.
+
+### Entorno de testing
+
+Los tests utilizan un entorno separado del desarrollo mediante el archivo `.env.test`.
+
+La URI debe apuntar exclusivamente a una base descartable cuyo nombre contenga la palabra `test`, por ejemplo:
+
+```env
+PORT=8081
+MONGODB_URI=mongodb://localhost:27017/shipnow_test
+NODE_ENV=test
+JWT_SECRET=test_secret
+LOG_LEVEL=error
+```
+
+El repositorio incluye `.env.test.example` como referencia. El archivo `.env.test` está excluido de Git porque puede contener credenciales.
+
+La suite incorpora una protección que cancela la ejecución si la base conectada no contiene la palabra `test`.
+
+### Ejecución
+
+Para ejecutar todos los tests:
+
+```bash
+npm test
+```
+
+No es necesario iniciar el servidor manualmente. Supertest importa la aplicación Express directamente y realiza las peticiones internamente.
+
+### Módulos cubiertos
+
+La suite valida:
+
+- Estado general de la API.
+- Creación y consulta de usuarios.
+- Validaciones de usuarios.
+- Emails duplicados.
+- Creación y actualización de productos.
+- Reglas de stock y estado de productos.
+- Generación de datos mock.
+- Persistencia de usuarios, pedidos y entregas relacionadas.
+- Cantidades inválidas.
+- Endpoint de prueba del logger.
+- Acceso a Swagger UI.
+- Rutas inexistentes.
+- Formato uniforme de errores.
+
+### Limpieza de datos
+
+Antes de cada test se eliminan los documentos generados en la base de testing.
+
+Esto permite que los tests sean:
+
+- Independientes.
+- Repetibles.
+- Predecibles.
+- Seguros para los datos de desarrollo.
+
+La suite actual contiene `21` tests funcionales.
