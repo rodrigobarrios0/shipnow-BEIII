@@ -1,0 +1,54 @@
+/api/deliveries/{id}/proof:
+  post:
+    tags:
+      - Deliveries
+    summary: Cargar el comprobante de una entrega
+    description: Carga un archivo PDF, JPG o PNG y lo asocia a una entrega existente.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador MongoDB de la entrega
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - proof
+            properties:
+              proof:
+                type: string
+                format: binary
+                description: Comprobante PDF, JPG o PNG de hasta 5 MB
+    responses:
+      '201':
+        description: Comprobante cargado correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                message:
+                  type: string
+                  example: Comprobante cargado correctamente.
+                payload:
+                  $ref: '#/components/schemas/Delivery'
+      '400':
+        description: Archivo o identificador inválido
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Entrega no encontrada
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'

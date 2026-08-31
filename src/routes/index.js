@@ -3,6 +3,7 @@ import productsRouter from './products.router.js';
 import usersRouter from './users.router.js';
 import mocksRouter from './mocks.router.js';
 import loggerRouter from './logger.router.js';
+import deliveriesRouter from './deliveries.router.js';
 
 const router = Router();
 
@@ -10,6 +11,6 @@ router.use('/products', productsRouter);
 router.use('/users', usersRouter);
 router.use('/mocks', mocksRouter);
 router.use('/logger', loggerRouter);
-
+router.use('/deliveries', deliveriesRouter);
 
 export default router;

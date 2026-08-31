@@ -31,6 +31,21 @@ class UserRepository {
     async insertMany(usersData) {
         return User.insertMany(usersData);
     }
+
+    async addDocument(userId, documentMetadata) {
+        return User.findByIdAndUpdate(
+            userId,
+            {
+                $push: {
+                    documents: documentMetadata
+                }
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+    );
+}
 }
 
 export default new UserRepository();

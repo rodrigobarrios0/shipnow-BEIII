@@ -205,3 +205,65 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ErrorResponse'
+
+/api/users/{id}/documents:
+  post:
+    tags:
+      - Users
+    summary: Cargar un documento de usuario
+    description: Carga un archivo PDF, JPG o PNG y lo asocia al usuario indicado.
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador MongoDB del usuario
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - document
+              - documentType
+            properties:
+              document:
+                type: string
+                format: binary
+                description: Archivo PDF, JPG o PNG de hasta 5 MB
+              documentType:
+                type: string
+                enum:
+                  - user_document
+                  - driver_license
+                example: user_document
+    responses:
+      '201':
+        description: Documento cargado correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                message:
+                  type: string
+                  example: Documento cargado correctamente.
+                payload:
+                  $ref: '#/components/schemas/User'
+      '400':
+        description: Archivo, tipo de documento o identificador inválido
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '404':
+        description: Usuario no encontrado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'              

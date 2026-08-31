@@ -1,10 +1,19 @@
 import { ERROR_CODES } from '../errors/error-codes.js';
 import logger from '../config/logger.js';
+import multer from 'multer';
 
 const errorHandler = (error, req, res, next) => {
     let selectedError;
 
-    if (error.name === 'CastError') {
+    if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+        selectedError = ERROR_CODES.FILE_TOO_LARGE;
+    } else if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+        selectedError = ERROR_CODES.INVALID_FILE_FIELD;
+    } else {
+        selectedError = ERROR_CODES.UPLOAD_ERROR;
+    }
+    } else if (error.name === 'CastError') {
         selectedError = ERROR_CODES.INVALID_ID;
     } else if (error.name === 'ValidationError') {
         selectedError = ERROR_CODES.VALIDATION_ERROR;
@@ -17,10 +26,11 @@ const errorHandler = (error, req, res, next) => {
     }
 
     const isExpectedError =
-    error.isOperational ||
-    error.name === 'CastError' ||
-    error.name === 'ValidationError' ||
-    error.code === 11000;
+        error instanceof multer.MulterError ||
+        error.isOperational ||
+        error.name === 'CastError' ||
+        error.name === 'ValidationError' ||
+        error.code === 11000;
 
 const logMetadata = {
     code: selectedError.code,

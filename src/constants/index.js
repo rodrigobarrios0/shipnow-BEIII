@@ -27,3 +27,9 @@ export const DELIVERY_STATUS = Object.freeze({
     IN_TRANSIT: 'in_transit',
     DELIVERED: 'delivered'
 });
+
+export const DOCUMENT_TYPES = Object.freeze({
+    USER_DOCUMENT: 'user_document',
+    DRIVER_LICENSE: 'driver_license',
+    DELIVERY_PROOF: 'delivery_proof'
+});

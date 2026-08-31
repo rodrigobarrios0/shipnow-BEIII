@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { DELIVERY_STATUS } from '../constants/index.js';
+import fileMetadataSchema from './schemas/file-metadata.schema.js';
 
 const deliverySchema = new mongoose.Schema(
     {
@@ -26,7 +27,11 @@ const deliverySchema = new mongoose.Schema(
         deliveredAt: {
             type: Date,
             default: null
-    }
+    },
+        proof: {
+            type: fileMetadataSchema,
+            default: null
+}
     },
     {
     timestamps: true

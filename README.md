@@ -14,6 +14,7 @@ Refactorizar la aplicación con una arquitectura por capas y una configuración 
 - Mongoose
 - dotenv
 - Nodemon
+- Multer
 
 ## Arquitectura
 
@@ -97,6 +98,13 @@ npm run dev
 | POST | `/api/users` | Crea un usuario |
 | PUT | `/api/users/:id` | Actualiza un usuario |
 | DELETE | `/api/users/:id` | Elimina un usuario |
+| POST | `/api/users/:id/documents` | Carga un documento asociado al usuario |
+
+### Deliveries
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| POST | `/api/deliveries/:id/proof` | Carga un comprobante asociado a una entrega |
 
 ## Variables de entorno
 
@@ -372,4 +380,59 @@ Esto permite que los tests sean:
 - Predecibles.
 - Seguros para los datos de desarrollo.
 
-La suite actual contiene `21` tests funcionales.
+La suite actual contiene `25` tests funcionales.
+
+## Carga de archivos con Multer
+
+ShipNow permite cargar documentos de usuarios y comprobantes de entrega mediante peticiones `multipart/form-data`.
+
+### Documentos de usuarios
+
+```http
+POST /api/users/:id/documents
+Content-Type: multipart/form-data
+```
+
+La petición debe incluir:
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `document` | File | Documento PDF, JPG o PNG |
+| `documentType` | Text | `user_document` o `driver_license` |
+
+### Comprobantes de entrega
+
+```http
+POST /api/deliveries/:id/proof
+Content-Type: multipart/form-data
+```
+
+La petición debe incluir:
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `proof` | File | Comprobante PDF, JPG o PNG |
+
+### Validaciones de archivos
+
+La configuración de Multer aplica las siguientes restricciones:
+
+- Solamente se aceptan archivos PDF, JPG y PNG.
+- El tamaño máximo permitido es de 5 MB.
+- Los archivos reciben nombres aleatorios para evitar colisiones.
+- Los documentos y comprobantes se guardan en carpetas separadas.
+- Si ocurre un error después de guardar un archivo, el servicio elimina el archivo huérfano.
+- Las rutas y los metadatos se almacenan en MongoDB.
+- La carpeta `uploads/` está excluida del repositorio.
+
+### Pruebas automatizadas
+
+Los endpoints de carga cuentan con tests funcionales realizados con Supertest.
+
+La suite verifica:
+
+- Carga de documentos asociados a usuarios.
+- Carga de comprobantes asociados a entregas.
+- Persistencia de los metadatos.
+- Rechazo de peticiones sin archivo.
+- Limpieza de los archivos creados durante los tests.
